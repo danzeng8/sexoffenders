@@ -222,7 +222,7 @@
       var height = $('#heatmap').height();
       var projection = d3.geoAlbersUsa().scale(5000).translate([width / 8, height / 2.5]);
       var google = window.google;
-      var markers = [];
+      var tractMarkers = [];
       var offenderMarkers = [];
       var locationCircles = [];
 
@@ -350,6 +350,7 @@
       var addListenersOnPolygon = function(polygon) {
         google.maps.event.addListener(polygon, 'click', function (event) {
           selectedTractIndex = polygon.index;
+          console.log(selectedTractIndex);
         });  
       }
 
@@ -371,11 +372,11 @@
         index: i
       });
 
-      markers.push(tractPolygon);
+      tractMarkers.push(tractPolygon);
     }
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
-      addListenersOnPolygon(markers[i]);
+    for (var i = 0; i < tractMarkers.length; i++) {
+      tractMarkers[i].setMap(map);
+      addListenersOnPolygon(tractMarkers[i]);
     }
 
 
@@ -604,10 +605,10 @@
 
   SVGOverlay.prototype.draw = function () {
    var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffc1c1","#a30000"]);
-   for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
+   for (var i = 0; i < tractMarkers.length; i++) {
+    tractMarkers[i].setMap(null);
   }
-  markers = [];
+  tractMarkers = [];
 
   this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   this.svg.style.position = 'absolute';
@@ -673,6 +674,12 @@
     var y = d3.scaleLinear()
     .range([0, height]);
 
+    var addListenersOnPolygon = function(polygon) {
+        google.maps.event.addListener(polygon, 'click', function (event) {
+          selectedTractIndex = polygon.index;
+          console.log(selectedTractIndex);
+        });  
+      }
 
     for(i = 0; i < mapdata.features.length; i++) {
       var currentCoords = mapdata.features[i].geometry.coordinates[0];
@@ -687,12 +694,15 @@
         strokeOpacity: 0.8,
         strokeWeight: 1,
         fillColor: colorScale(visualizedTraitList[i]),
-        fillOpacity: 0.45
+        fillOpacity: 0.45,
+        index: i
       });
-      markers.push(tractPolygon);
+      tractMarkers.push(tractPolygon);
     }
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
+    for (var i = 0; i < tractMarkers.length; i++) {
+      tractMarkers[i].setMap(map);
+      addListenersOnPolygon(tractMarkers[i]);
+    
     }
   });
 
