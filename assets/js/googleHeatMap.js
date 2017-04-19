@@ -1,4 +1,4 @@
-    var selectedTractIndex = -1;
+ var selectedTractIndex = -1;
     var visualizedTraitList = []
     var visMin = 10000;
     var visMax = -10000;
@@ -343,7 +343,7 @@
         d.geometry.coordinates[0] = newpoints;
       });
       mapdata = data;
-      var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffc1c1","#a30000"]);
+      var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffe6e6","#990000"]);
 
 
 
@@ -368,7 +368,7 @@
         strokeOpacity: 0.8,
         strokeWeight: 1,
         fillColor: colorScale(visualizedTraitList[i]),
-        fillOpacity: 0.45,
+        fillOpacity: 0.8,
         index: i
       });
 
@@ -604,7 +604,7 @@
 
 
   SVGOverlay.prototype.draw = function () {
-   var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffc1c1","#a30000"]);
+   var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["##ffe6e6","#990000"]);
    for (var i = 0; i < tractMarkers.length; i++) {
     tractMarkers[i].setMap(null);
   }
@@ -650,7 +650,7 @@
       d.geometry.coordinates[0] = newpoints;
     });
     mapdata = data;
-    var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffc1c1","#a30000"]);
+    var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffffff","#a30000"]);
 
     var googleProjection = d3.geoProjection(function(x,y) {
         //console.log(x,y);
@@ -694,7 +694,7 @@
         strokeOpacity: 0.8,
         strokeWeight: 1,
         fillColor: colorScale(visualizedTraitList[i]),
-        fillOpacity: 0.45,
+        fillOpacity: 0.8,
         index: i
       });
       tractMarkers.push(tractPolygon);
