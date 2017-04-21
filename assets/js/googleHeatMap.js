@@ -238,11 +238,13 @@ readUnder18();
     });
       var markerCluster = new MarkerClusterer(map, [],{
           maxZoom:12,
+          gridSize: 100,
             imagePath: 'assets/img/m'
       });
       
       var markerClusterSchool = new MarkerClusterer(map, [],{
           maxZoom:12,
+          gridSize: 100,
           imagePath: 'assets/img/s'
       });
       
