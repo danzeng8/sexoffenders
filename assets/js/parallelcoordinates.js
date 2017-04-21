@@ -1000,10 +1000,10 @@ if(displayMedian) {
  }
  else {
    if(displayMedian) {
-    fill(color(255.0,255.0,255.0));
+    fill(color(255.0,0.0,0.0));
    }
    else {
-    fill(color(255.0,0.0,0.0));
+    fill(color(255.0,255.0,255.0));
    }
  }
  rect(marginX, 0.2 * topMargin, 0.08*width,0.04*height);
@@ -1020,10 +1020,10 @@ if(displayMedian) {
    }
    else {
      if(displaySelectedLine) {
-      fill(color(255.0,255.0,255.0));
+      fill(color(0.0,255.0,0.0));
      }
      else {
-      fill(color(0.0,255.0,0.0));
+      fill(color(255.0,255.0,255.0));
      }
    }
    rect(7.0*marginX, 0.2 * topMargin, 0.1*width,0.04*height);
