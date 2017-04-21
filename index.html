@@ -38,7 +38,7 @@
             </div>
             <div class="col-md-3">
 	      <div>
-              <input id="mapsearch" type="text" class="form-control" placeholder="Search..">
+              <input id="mapsearch" type="text" class="form-control" placeholder="Ex: Delmar Loop">
 	      </div>
 	    </div>
   	  </div>
@@ -62,6 +62,7 @@
 		  <div class="col-md-4">
 		    <input type="range" id="radiusSlider" value="40">Circle radii: <span id="circleRadius">1000</span> feet </input>
 		  </div>
+      
 
 		  <div class="col-md-4">
 		    <div class="dropdown">
@@ -79,8 +80,14 @@
 			<li id="hhSize" data-tog="0"><a href="#"><div class="btnText">Percentage Female-headed households</div></a></li>
 			<li id="under18Rate" data-tog="0"><a href="#"><div class="btnText">Percentage Under 18</div></a></li>
 		      </ul>
+
 		    </div>
 		  </div>
+      <div class="col-md-2">
+        
+        <input type="checkbox" id="offenderDensityCheckbox" disabled>Offender Density Overlay</input>
+      </div>
+
 		  <div class="col-md-1">
 		    <div id="maxWin1" class="fa fa-plus-square"></div>
 		  </div>
@@ -97,7 +104,7 @@
 		     <div class="legend">
                        <i class="fa fa-circle text-info"></i> Schools
                        <i class="fa fa-circle text-warning"></i> Offenders
-                       <input type="checkbox" id="offenderDensityCheckbox" checked disabled>Offender Density Overlay
+
                     </div>
                   </div>
                      
