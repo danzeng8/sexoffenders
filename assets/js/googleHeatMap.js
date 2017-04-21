@@ -13,7 +13,8 @@ var positionCircles = {};
 var imageIcon = {
     url :'assets/img/school.JPG'
   };
-var offenderDensitySelected = false;
+var offenderDensitySelected = true;
+var displayOffenderDensities = false;
 
 //% with bachelor's degree
 var educationRates = []
@@ -446,9 +447,18 @@ SVGOverlay.prototype.onAdd = function () {
     tractMarkers[i].setMap(map);
     addListenersOnPolygon(tractMarkers[i]);
     addListenersOnPolygon(offenderDensityPolygons[i]);
-    if(visMax == offenderRateMax) {
+    if(displayOffenderDensities) {
+      offenderDensityPolygons[i].setMap(map);
+    }
+    else {
       offenderDensityPolygons[i].setMap(null);
     }
+    /**if(offenderDensitySelected ) {
+      offenderDensityPolygons[i].setMap(null);
+    }
+    else {
+      offenderDensityPolygons[i].setMap(map)
+    }**/
   }
 
 });
@@ -572,6 +582,7 @@ SVGOverlay.prototype.onRemove = function () {
 };
 
 SVGOverlay.prototype.setOffenderPolygonVisibilities = function(offenderPolygonsVisible) {
+  displayOffenderDensities = offenderPolygonsVisible;
   if(offenderPolygonsVisible) {
 
     for (var i = 0; i < offenderDensityPolygons.length; i++) {
@@ -593,6 +604,7 @@ SVGOverlay.prototype.draw = function () {
   offenderDensityPolygons[i].setMap(null);
 }
 tractMarkers = [];
+offenderDensityPolygons = [];
 
 this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 this.svg.style.position = 'absolute';
@@ -636,10 +648,10 @@ d3.json("assets/data/mo.json", function(error, data) {
   var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffffff","#a30000"]);
   var offenderDensityColorScale = d3.scaleLinear().domain([offenderRateMin,offenderRateMax]).range(["#f0f8ff","#191970"]);
 
+
   var addListenersOnPolygon = function(polygon) {
       google.maps.event.addListener(polygon, 'click', function (event) {
         selectedTractIndex = polygon.index;
-        console.log(selectedTractIndex);
       });  
     }
 
@@ -677,7 +689,7 @@ d3.json("assets/data/mo.json", function(error, data) {
       strokeOpacity: 1.0,
       fillColor: offenderDensityColorScale(offenderDensities[i]),
       fillOpacity: 1.0,
-      map: null,
+      map: map,
       index: i
     });
     offenderDensityPolygons.push(tractOffenderPolygon);
@@ -686,12 +698,19 @@ d3.json("assets/data/mo.json", function(error, data) {
   for (var i = 0; i < tractMarkers.length; i++) {
     tractMarkers[i].setMap(map);
     addListenersOnPolygon(tractMarkers[i]);
+    if(displayOffenderDensities) {
+      offenderDensityPolygons[i].setMap(map);
+    }
+    else {
+      offenderDensityPolygons[i].setMap(null);
+    }
+    /**
     if(offenderDensitySelected) {
       offenderDensityPolygons[i].setMap(null);
     }
     if(!$('#offenderDensityCheckbox').is(':checked')) {
       offenderDensityPolygons[i].setMap(null);
-    }
+    }**/
     //if($('#offenderDensityCheckbox').is(':checked') && $("offenderDensity").attr("data-tog") == "0") {
       //offenderDensityPolygons[i].setMap(map);
     //}
@@ -876,6 +895,7 @@ $('#radiusSlider').mousemove(function (){
 
 $('#offenderDensityCheckbox').click(function() {
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
+
   /**if($('#offenderDensityCheckbox').is(':checked')) {
 
     for (var i = 0; i < offenderDensityPolygons.length; i++) {
