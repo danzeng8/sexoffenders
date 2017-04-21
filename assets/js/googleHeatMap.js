@@ -229,17 +229,29 @@ readUnder18();
     var tractMarkers = [];
     //this.offenderMarkers = [];
     var map = new google.maps.Map(el, {
-      center: new google.maps.LatLng(38.659175,  -90.396881),
-      zoom: 8,
-  mapTypeControlOptions: {
-    mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
-    'styled_map']
-  }
-});
+	center: new google.maps.LatLng(38.659175,  -90.396881),
+	zoom: 8,
+	maxZoom: 14
+	//mapTypeControlOptions: {
+      //mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain','styled_map']
+	//}
+    });
+      var markerCluster = new MarkerClusterer(map, [],{
+          maxZoom:12,
+            imagePath: 'assets/img/m'
+      });
+      
+      var markerClusterSchool = new MarkerClusterer(map, [],{
+          maxZoom:12,
+          imagePath: 'assets/img/s'
+      });
+      
+
+
     //Credit to Google Maps search api: https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
-      var input = document.getElementById('pac-input');
+      var input = document.getElementById('mapsearch');
       var searchBox = new google.maps.places.SearchBox(input);
-      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+      //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
       map.addListener('bounds_changed', function() {
         searchBox.setBounds(map.getBounds());
@@ -296,7 +308,7 @@ var addCircle = function(location) {
             strokeOpacity: 0.8,      
             strokeWeight: 1,      
             fillColor: '#00FF0F',      
-            fillOpacity: 0.8,      
+            fillOpacity: 0.5,      
             center: location,      
             radius: currentCircleRadius, 
             map: map,
@@ -331,6 +343,7 @@ function SVGOverlay (map) {
 SVGOverlay.prototype = new google.maps.OverlayView();
 var g;
 var layer;
+
 
 SVGOverlay.prototype.onAdd = function () {
   this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -380,7 +393,7 @@ SVGOverlay.prototype.onAdd = function () {
     var addListenersOnPolygon = function(polygon) {
       google.maps.event.addListener(polygon, 'click', function (event) {
         selectedTractIndex = polygon.index;
-        console.log(selectedTractIndex);
+        //console.log(selectedTractIndex);
       });  
     }
 
@@ -397,7 +410,7 @@ SVGOverlay.prototype.onAdd = function () {
       strokeOpacity: 0.8,
       strokeWeight: 1,
       fillColor: colorScale(visualizedTraitList[i]),
-      fillOpacity: 0.8,
+      fillOpacity: 0.5,
       index: i
     });
 
@@ -407,7 +420,6 @@ SVGOverlay.prototype.onAdd = function () {
     tractMarkers[i].setMap(map);
     addListenersOnPolygon(tractMarkers[i]);
   }
-
 
 });
 
@@ -424,9 +436,10 @@ SVGOverlay.prototype.onAdd = function () {
         map: map,
         radiusCircle: null
       });
-      offenderMarker.addListener('click', function(event) {
-            addCircle(event.latLng);
-      });
+	  offenderMarker.addListener('click', function(event) {
+              addCircle(event.latLng);
+	  });
+	  markerCluster.addMarker(offenderMarker);
       
     }
   }
@@ -451,7 +464,7 @@ SVGOverlay.prototype.onAdd = function () {
         schoolMarker.addListener('click', function(event) {
           addCircle(event.latLng);
       });
-
+	  markerClusterSchool.addMarker(schoolMarker); 
       
 
     }
@@ -476,6 +489,7 @@ SVGOverlay.prototype.onAdd = function () {
         schoolMarker.addListener('click', function(event) {
           addCircle(event.latLng); 
       });
+	  markerClusterSchool.addMarker(schoolMarker);
     }
   }
 
@@ -498,7 +512,7 @@ SVGOverlay.prototype.onAdd = function () {
         schoolMarker.addListener('click', function(event) {
           addCircle(event.latLng);
       });
-
+	  markerClusterSchool.addMarker(schoolMarker);
      
     }
   }
@@ -564,7 +578,6 @@ g = layer.append("svg")
 d3.json("assets/data/mo.json", function(error, data) {
   if (error) throw error;
 
-
   var simplifyTolerace = 0.0008;
   var newdata = [];
   var i = 0;
@@ -620,7 +633,7 @@ d3.json("assets/data/mo.json", function(error, data) {
       strokeOpacity: 0.8,
       strokeWeight: 1,
       fillColor: colorScale(visualizedTraitList[i]),
-      fillOpacity: 0.8,
+      fillOpacity: 0.5,
       index: i
     });
     tractMarkers.push(tractPolygon);
@@ -647,7 +660,7 @@ overlay = new SVGOverlay(map);
 
 $("#offenderDensity").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
-    readOffenderDensities();
+      //readOffenderDensities();
     visMin = offenderRateMin;
     visMax = offenderRateMax;
     visualizedTraitList = offenderDensities;
@@ -661,7 +674,7 @@ $("#offenderDensity").on("click", function() {
 
 $("#bdegree").on("click",function() {
   if ($(this).attr("data-tog") == "0"){
-    readEducation();
+    //readEducation();
     visMin = educationRateMin;
     visMax = educationRateMax;
     visualizedTraitList = educationRates;
@@ -675,7 +688,7 @@ $("#bdegree").on("click",function() {
 
 $("#fstamps").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
-    readPublic();
+    //readPublic();
     visMin = publicRateMin;
     visMax = publicRateMax;
     visualizedTraitList = publicRates;
@@ -690,7 +703,7 @@ $("#fstamps").on("click", function() {
 
 $("#medIncome").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
-    readIncome();
+    //readIncome();
     visMin = incomeMin;
     visMax = incomeMax;
     visualizedTraitList = medianIncomes;
@@ -704,7 +717,7 @@ $("#medIncome").on("click", function() {
 
 $("#healthRate").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
-    readHealth();
+    //readHealth();
     visMin = healthRateMin;
     visMax = healthRateMax;
     visualizedTraitList = healthRates;
@@ -718,7 +731,7 @@ $("#healthRate").on("click", function() {
 
 $("#povertyRate").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
-    readPoverty();
+    //readPoverty();
     visMin = povertyMin;
     visMax = povertyMax;
     visualizedTraitList = povertyRates;
@@ -732,7 +745,7 @@ $("#povertyRate").on("click", function() {
 
 $("#fhhRate").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
-    readPoverty();
+    //readPoverty();
     visMin = fhhMin;
     visMax = fhhMax;
     visualizedTraitList = fhhs;
@@ -746,7 +759,7 @@ $("#fhhRate").on("click", function() {
 
 $("#hhSize").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
-    readHHSizes();
+    //readHHSizes();
     visMin = hhSizeMin;
     visMax = hhSizeMax;
     visualizedTraitList = hhSizes;
@@ -760,7 +773,7 @@ $("#hhSize").on("click", function() {
 
 $("#under18Rate").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
-    readUnder18();
+    //readUnder18();
     visMin = u18Min;
     visMax = u18Max;
     visualizedTraitList = under18s;
