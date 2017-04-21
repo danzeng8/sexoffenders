@@ -481,6 +481,7 @@ void drawColumnAtMouse(int index) {
 
 
 void draw() {
+   ArrayList selectedPositions = new ArrayList();
    if(0.9*$('#parallelcoordinates').width() != canvasWidth) {
     canvasWidth = 0.9*$('#parallelcoordinates').width();
     canvasHeight = 0.8*canvasWidth;
@@ -591,7 +592,8 @@ void draw() {
                if(orientations[k+1] == 1) {
                   pos2Y = topMargin + (currentRow[k+1] * frameHeight);
                }
-               line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
+               //float[4] selectedPos = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
+               selectedPositions.add(i);
            }
            break;
         }
@@ -611,7 +613,8 @@ void draw() {
                if(orientations[k+1] == 1) {
                   pos2Y = topMargin + (currentRow[k+1] * frameHeight);
                }
-               line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
+               //float[4] selectedPos = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
+               selectedPositions.add(i);
             }
             break;
           }
@@ -620,6 +623,59 @@ void draw() {
         line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
      }
   }
+  for(int i = 0; i < selectedPositions.size(); i++) {
+    stroke(color(0.0,0.0,255.0));
+     float[] currentRow = dataPositions[((int)selectedPositions.get(i))-1];
+     
+     //If dimension selected, color data lines according to that dimension
+     if(colorGradientIndex != -1) {
+       color currentColor = lerpColor(gradientColor1, gradientColor2,1.0-currentRow[colorGradientIndex]);
+       stroke(currentColor);
+     }
+     boolean inRange = true;
+     for(int j = 0; j < currentRow.length-1; j++) {
+        if(j == draggedIndex || j + 1 == draggedIndex) {
+          continue; 
+        }
+        float pos1Y = topMargin + ((1.0 - currentRow[j]) * frameHeight);
+        
+        if(orientations[j] == 1) {
+          pos1Y = topMargin + (currentRow[j] * frameHeight);
+        }
+        if(pos1Y < topMargin + (topKnobHeights[j] * frameHeight) || pos1Y > topMargin + (bottomKnobHeights[j] * frameHeight)) {
+          inRange = false;
+          break;
+        }
+        
+        float pos2Y = topMargin + ((1.0 - currentRow[j+1]) * frameHeight);
+        if(orientations[j+1] == 1) {
+          pos2Y = topMargin + (currentRow[j+1] * frameHeight);
+        }
+        if(pos2Y < topMargin + (topKnobHeights[j+1] * frameHeight) || pos2Y > topMargin + (bottomKnobHeights[j+1] * frameHeight)) {
+          inRange = false;
+          break;
+        }
+     }
+     if(!inRange) {
+       continue; 
+     }
+      for(int j = 0; j < currentRow.length-1; j++) {
+       //Dont draw in original place if dimension being reordered.
+       if(j == draggedIndex || j + 1 == draggedIndex) {
+          continue; 
+        }
+        float pos1Y = topMargin + ((1.0 - currentRow[j]) * frameHeight);
+        float pos2Y = topMargin + ((1.0 - currentRow[j+1]) * frameHeight);
+        if(orientations[j] == 1) {
+          pos1Y = topMargin + (currentRow[j] * frameHeight);
+        }
+        if(orientations[j+1] == 1) {
+          pos2Y = topMargin + (currentRow[j+1] * frameHeight);
+        }
+        line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
+    }
+  }
+  stroke(128);
 }
 
 if(selectedTractIndex != -1 && displaySelectedLine) {
@@ -665,7 +721,7 @@ if(selectedTractIndex != -1 && displaySelectedLine) {
         pos2Y = topMargin + (currentRow[j+1] * frameHeight);
       }
       //If mouse hovers over one segment of data point, then highlight all lines of data point
-      if(!rectangleSelection && closeToLine(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
+     /**if(!rectangleSelection && closeToLine(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
         stroke(color(0.0,0.0,255.0));
         for(int k = 0; k < currentRow.length-1; k++) {
              pos1Y = topMargin + ((1.0 - currentRow[k]) * frameHeight);
@@ -676,7 +732,8 @@ if(selectedTractIndex != -1 && displaySelectedLine) {
              if(orientations[k+1] == 1) {
                 pos2Y = topMargin + (currentRow[k+1] * frameHeight);
              }
-             line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
+             //float[4] selectedPosition = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
+            selectedPositions.add(i);
          }
          break;
       }
@@ -696,14 +753,17 @@ if(selectedTractIndex != -1 && displaySelectedLine) {
              if(orientations[k+1] == 1) {
                 pos2Y = topMargin + (currentRow[k+1] * frameHeight);
              }
-             line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
+             float[4] selectedPosition = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
+             selectedPositions.add(selectedPosition);
+             //line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
           }
           break;
         }
-      }
+      }**/
       
-      line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
+     line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
    }
+
 }
 if(displayMedian) { 
   stroke(color(255.0,0.0,0.0));
@@ -747,7 +807,7 @@ if(displayMedian) {
         pos2Y = topMargin + (currentRow[j+1] * frameHeight);
       }
       //If mouse hovers over one segment of data point, then highlight all lines of data point
-      if(!rectangleSelection && closeToLine(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
+      /**if(!rectangleSelection && closeToLine(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
         stroke(color(0.0,0.0,255.0));
         for(int k = 0; k < currentRow.length-1; k++) {
              pos1Y = topMargin + ((1.0 - currentRow[k]) * frameHeight);
@@ -758,7 +818,9 @@ if(displayMedian) {
              if(orientations[k+1] == 1) {
                 pos2Y = topMargin + (currentRow[k+1] * frameHeight);
              }
-             line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
+             //line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
+            float[4] selectedPosition = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
+             selectedPositions.add(selectedPosition);
          }
          break;
       }
@@ -778,14 +840,21 @@ if(displayMedian) {
              if(orientations[k+1] == 1) {
                 pos2Y = topMargin + (currentRow[k+1] * frameHeight);
              }
-             line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
+             //line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
+             float[4] selectedPosition = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
+             selectedPositions.add(selectedPosition);
           }
           break;
         }
-      }
+      }**/
       
       line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
    }
+   /**for(int i = 0; i < selectedPositions.length; i++) {
+      stroke(color(0.0,0.0,255.0));
+      line(selectedPositions[i][0],selectedPositions[i][1],selectedPositions[i][2],selectedPositions[i][3]);
+    }
+    stroke(128);**/
 }
  
  if(rectangleSelection) {
