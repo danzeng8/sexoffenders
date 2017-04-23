@@ -74,10 +74,11 @@
 			<li id="offenderDensity" data-tog="0"><a href="#"><div class="btnText">Offender population density</div></a></li>
 			<li id="bdegree" data-tog="0"><a href="#"><div class="btnText">Percentage with Bachelor's Degree</div></a></li>
 			<li id="fstamps" data-tog="0"><a href="#"><div class="btnText">Percentage Receiving Food Stamps</div></a></li>
-			<li id="medIncome" data-tog="0"><a href="#"><div class="btnText">Percentage without Health Insurance</div></a></li>
-			<li id="healthRate" data-tog="0"><a href="#"><div class="btnText">Percentage below poverty line</div></a></li>
-			<li id="povertyRate" data-tog="0"><a href="#"><div class="btnText">Percentage Household Sizes > 4</div></a></li>
-			<li id="hhSize" data-tog="0"><a href="#"><div class="btnText">Percentage Female-headed households</div></a></li>
+			<li id="healthRate" data-tog="0"><a href="#"><div class="btnText">Percentage without Health Insurance</div></a></li>
+			<li id="medIncome" data-tog="0"><a href="#"><div class="btnText">Median Income</div></a></li>
+      <li id="povertyRate" data-tog="0"><a href="#"><div class="btnText">Percentage below poverty line</div></a></li>
+			<li id="hhSize" data-tog="0"><a href="#"><div class="btnText">Percentage Household Sizes > 4</div></a></li>
+			<li id="fhhRate" data-tog="0"><a href="#"><div class="btnText">Percentage Female-headed households</div></a></li>
 			<li id="under18Rate" data-tog="0"><a href="#"><div class="btnText">Percentage Under 18</div></a></li>
 		      </ul>
 
@@ -110,6 +111,12 @@
                        <img src = "assets/img/googleMarker.png" style="height:25px; width:25px"> Sex Offenders
                        <img src = "assets/img/g1.png">School Cluster
                        <img src = "assets/img/g2.png">Offender Cluster
+                       <div>
+                          Color scale: 
+                          <span id = "demographicMin"></span>
+                          <div id = "demographicGradient"> </div>
+                          <span id = "demographicMax"></span>
+                       </div>
 
                     </div>
                   </div>
@@ -187,7 +194,7 @@
     <script src="assets/js/schoolDistanceMap.js" type="text/javascript"></script>
     <script src="assets/js/googleHeatMap.js" type="text/javascript"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3&amp;libraries=places&amp;sensor=false&amp;key=AIzaSyC62R0j23s1c-JzP6Gd3Q7UC5mDykuG-gc&amp;callback=initMap"></script>
-
+    <script src="assets/js/gradientLegend.js" type="text/javascript"></script>
     <script src="assets/js/parallelcoordinates.js" type="text/processing" data-processing-target="mycanvas"></script>
     
 
