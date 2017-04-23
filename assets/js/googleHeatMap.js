@@ -4,12 +4,16 @@ var offenderCircles = new Array()
 var offenderMarkers = new Array()
 var schoolCircles = new Array()
 var markerClusterers = new Array()
+var markerPositions = new Array()
+var schoolPositions = new Array()
 var offenderDensityPolygons = new Array()
 var visMin = 10000;
 var visMax = -10000;
 var overlay = null;
 var currentCircleRadius = 304.8;
 var positionCircles = {};
+var offendersInZoom = new Array();
+var schoolsInZoom = new Array();
 var imageIcon = {
     url :'assets/img/school.JPG'
   };
@@ -231,7 +235,6 @@ readUnder18();
     var projection = d3.geoAlbersUsa().scale(5000).translate([width / 8, height / 2.5]);
     var google = window.google;
     var tractMarkers = [];
-    //this.offenderMarkers = [];
     var map = new google.maps.Map(el, {
 	center: new google.maps.LatLng(38.659175,  -90.396881),
 	zoom: 8,
@@ -399,6 +402,7 @@ SVGOverlay.prototype.onAdd = function () {
     var addListenersOnPolygon = function(polygon) {
       google.maps.event.addListener(polygon, 'click', function (event) {
         selectedTractIndex = polygon.index;
+        findSchoolOffenderDistances(polygon);
       });  
     }
 
@@ -453,15 +457,10 @@ SVGOverlay.prototype.onAdd = function () {
     else {
       offenderDensityPolygons[i].setMap(null);
     }
-    /**if(offenderDensitySelected ) {
-      offenderDensityPolygons[i].setMap(null);
-    }
-    else {
-      offenderDensityPolygons[i].setMap(map)
-    }**/
   }
 
 });
+
 
   d3.csv("assets/data/sexOffenders.csv", function(data) {
     for(var i = 0; i < data.length; i++) {
@@ -476,6 +475,12 @@ SVGOverlay.prototype.onAdd = function () {
         map: map,
         radiusCircle: null
       });
+      markerPositions.push(offenderMarker.getPosition());
+
+    if(map.getBounds().contains(offenderMarker.getPosition()))
+    {
+        offendersInZoom.push(offenderMarker.getPosition());
+    } 
 	  offenderMarker.addListener('click', function(event) {
               addCircle(event.latLng);
 	  });
@@ -483,7 +488,6 @@ SVGOverlay.prototype.onAdd = function () {
       
     }
   }
-
 });
 
   d3.csv("assets/data/publicschools.csv", function(data) {
@@ -500,6 +504,12 @@ SVGOverlay.prototype.onAdd = function () {
           icon: imageIcon,
           map: map
         });
+       schoolPositions.push(schoolMarker.getPosition());
+
+        if(map.getBounds().contains(schoolMarker.getPosition()))
+        {
+            schoolsInZoom.push(schoolMarker.getPosition());
+        } 
 
         schoolMarker.addListener('click', function(event) {
           addCircle(event.latLng);
@@ -525,6 +535,11 @@ SVGOverlay.prototype.onAdd = function () {
           icon: imageIcon,
           map: map
         });
+        schoolPositions.push(schoolMarker.getPosition());
+        if(map.getBounds().contains(schoolMarker.getPosition()))
+          {
+              schoolsInZoom.push(schoolMarker.getPosition);
+          } 
 
         schoolMarker.addListener('click', function(event) {
           addCircle(event.latLng); 
@@ -548,6 +563,11 @@ SVGOverlay.prototype.onAdd = function () {
           icon: imageIcon,
           map: map
         });
+        schoolPositions.push(schoolMarker.getPosition());
+        if(map.getBounds().contains(schoolMarker.getPosition()))
+        {
+            schoolsInZoom.push(schoolMarker.getPosition());
+        } 
 
         schoolMarker.addListener('click', function(event) {
           addCircle(event.latLng);
@@ -556,9 +576,9 @@ SVGOverlay.prototype.onAdd = function () {
      
     }
   }
-
+  
 });
-
+  
 
   this.onPan();
   document.body.appendChild(this.svg);
@@ -572,7 +592,19 @@ SVGOverlay.prototype.changeRadius = function(newRadius) {
 }
 
 SVGOverlay.prototype.onPan = function() {
+  offendersInZoom = new Array();
+  for(var i = 0; i < markerPositions.length; i++) {
+    if(map.getBounds().contains(markerPositions[i])) {
+      offendersInZoom.push(markerPositions[i]);
+    }
+  }
 
+  schoolsInZoom = new Array();
+  for(var i = 0; i < schoolPositions.length; i++) {
+    if(map.getBounds().contains(schoolPositions[i])) {
+      schoolsInZoom.push(schoolPositions[i]);
+    }
+  }
 };
 
 SVGOverlay.prototype.onRemove = function () {
@@ -598,130 +630,136 @@ SVGOverlay.prototype.setOffenderPolygonVisibilities = function(offenderPolygonsV
 
 
 SVGOverlay.prototype.draw = function () {
+  offendersInZoom = new Array();
+  schoolsInZoom = new Array();
  var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["##ffe6e6","#990000"]);
  for (var i = 0; i < tractMarkers.length; i++) {
   tractMarkers[i].setMap(null);
   offenderDensityPolygons[i].setMap(null);
-}
-tractMarkers = [];
-offenderDensityPolygons = [];
+  }
+  tractMarkers = [];
+  offenderDensityPolygons = [];
 
-this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-this.svg.style.position = 'absolute';
-this.svg.style.top = 0;
-this.svg.style.left = 0;
-this.svg.style.width = $('#heatMapContainer').width();
-this.svg.style.height = $('#heatmap').height();
-this.svg.style.pointerEvents = 'none';
-layer = d3.select(this.getPanes().overlayLayer).append("div");
+  this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  this.svg.style.position = 'absolute';
+  this.svg.style.top = 0;
+  this.svg.style.left = 0;
+  this.svg.style.width = $('#heatMapContainer').width();
+  this.svg.style.height = $('#heatmap').height();
+  this.svg.style.pointerEvents = 'none';
+  layer = d3.select(this.getPanes().overlayLayer).append("div");
 
-var bounds = this.map.getBounds(),
-center = bounds.getCenter(),
-ne = bounds.getNorthEast(),
-sw = bounds.getSouthWest();
-var topRight = this.map.getProjection().fromLatLngToPoint(this.map.getBounds().getNorthEast());
-var bottomLeft = this.map.getProjection().fromLatLngToPoint(this.map.getBounds().getSouthWest());
-var scale = Math.pow(2, this.map.getZoom());
+  var bounds = this.map.getBounds(),
+  center = bounds.getCenter(),
+  ne = bounds.getNorthEast(),
+  sw = bounds.getSouthWest();
+  var topRight = this.map.getProjection().fromLatLngToPoint(this.map.getBounds().getNorthEast());
+  var bottomLeft = this.map.getProjection().fromLatLngToPoint(this.map.getBounds().getSouthWest());
+  var scale = Math.pow(2, this.map.getZoom());
 
-var proj = this.map.getProjection();
+  var proj = this.map.getProjection();
 
 
 
-g = layer.append("svg")
-.attr('width', width)
-.attr('height', height);
+  g = layer.append("svg")
+  .attr('width', width)
+  .attr('height', height);
 
-d3.json("assets/data/mo.json", function(error, data) {
-  if (error) throw error;
+  d3.json("assets/data/mo.json", function(error, data) {
+    if (error) throw error;
 
-  var simplifyTolerace = 0.0008;
-  var newdata = [];
-  var i = 0;
-  data.features.forEach(function(d) {
-    var points = d.geometry.coordinates[0];
-    newpoints = simplify(points,simplifyTolerace,false);
-    i+=1; 
+    var simplifyTolerace = 0.0008;
+    var newdata = [];
+    var i = 0;
+    data.features.forEach(function(d) {
+      var points = d.geometry.coordinates[0];
+      newpoints = simplify(points,simplifyTolerace,false);
+      i+=1; 
 
-    d.geometry.coordinates[0] = newpoints;
+      d.geometry.coordinates[0] = newpoints;
+    });
+    mapdata = data;
+    
+    var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffffff","#a30000"]);
+    var offenderDensityColorScale = d3.scaleLinear().domain([offenderRateMin,offenderRateMax]).range(["#f0f8ff","#191970"]);
+
+
+    var addListenersOnPolygon = function(polygon) {
+        google.maps.event.addListener(polygon, 'click', function (event) {
+          selectedTractIndex = polygon.index;
+          findSchoolOffenderDistances(polygon);
+        });  
+      }
+
+    for(i = 0; i < mapdata.features.length; i++) {
+      var currentCoords = mapdata.features[i].geometry.coordinates[0];
+      var polygonCoords = [];
+      //console.log(colorScale(visualizedTraitList[i]));
+      var latAvg = 0.0;
+      var lngAvg = 0.0;
+      for(j = 0; j < currentCoords.length; j++) {
+        latAvg += currentCoords[j][1];
+        lngAvg += currentCoords[j][0];
+        polygonCoords.push({lat: currentCoords[j][1], lng: currentCoords[j][0]});
+      }
+      latAvg /= currentCoords.length;
+      lngAvg /= currentCoords.length;
+      var tractPolygon = new google.maps.Polygon({
+        paths: polygonCoords,
+        strokeWeight: 1,
+        strokeOpacity: 0.8,
+        fillColor: colorScale(visualizedTraitList[i]),
+        fillOpacity: 0.5,
+        index: i
+      });
+
+      tractMarkers.push(tractPolygon);
+
+      var boundaryPath = [];
+      for(j = 0; j < currentCoords.length; j++) {
+        boundaryPath.push({lat: (currentCoords[j][1]+latAvg)/2.0, lng: (currentCoords[j][0]+lngAvg)/2.0});
+      }
+      var tractOffenderPolygon = new google.maps.Polygon({
+        paths: boundaryPath,
+        strokeWeight: 0,
+        strokeOpacity: 1.0,
+        fillColor: offenderDensityColorScale(offenderDensities[i]),
+        fillOpacity: 1.0,
+        map: map,
+        index: i
+      });
+      offenderDensityPolygons.push(tractOffenderPolygon);
+
+    }
+    for (var i = 0; i < tractMarkers.length; i++) {
+      tractMarkers[i].setMap(map);
+      addListenersOnPolygon(tractMarkers[i]);
+      if(displayOffenderDensities) {
+        offenderDensityPolygons[i].setMap(map);
+      }
+      else {
+        offenderDensityPolygons[i].setMap(null);
+      }
+
+      addListenersOnPolygon(offenderDensityPolygons[i]);
+    }
+
+
   });
-  mapdata = data;
-  var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["#ffffff","#a30000"]);
-  var offenderDensityColorScale = d3.scaleLinear().domain([offenderRateMin,offenderRateMax]).range(["#f0f8ff","#191970"]);
 
-
-  var addListenersOnPolygon = function(polygon) {
-      google.maps.event.addListener(polygon, 'click', function (event) {
-        selectedTractIndex = polygon.index;
-      });  
+  for(var i = 0; i < markerPositions.length; i++) {
+    if(map.getBounds().contains(markerPositions[i])) {
+      offendersInZoom.push(markerPositions[i]);
     }
-
-  for(i = 0; i < mapdata.features.length; i++) {
-    var currentCoords = mapdata.features[i].geometry.coordinates[0];
-    var polygonCoords = [];
-    //console.log(colorScale(visualizedTraitList[i]));
-    var latAvg = 0.0;
-    var lngAvg = 0.0;
-    for(j = 0; j < currentCoords.length; j++) {
-      latAvg += currentCoords[j][1];
-      lngAvg += currentCoords[j][0];
-      polygonCoords.push({lat: currentCoords[j][1], lng: currentCoords[j][0]});
-    }
-    latAvg /= currentCoords.length;
-    lngAvg /= currentCoords.length;
-    var tractPolygon = new google.maps.Polygon({
-      paths: polygonCoords,
-      strokeWeight: 1,
-      strokeOpacity: 0.8,
-      fillColor: colorScale(visualizedTraitList[i]),
-      fillOpacity: 0.5,
-      index: i
-    });
-
-    tractMarkers.push(tractPolygon);
-
-    var boundaryPath = [];
-    for(j = 0; j < currentCoords.length; j++) {
-      boundaryPath.push({lat: (currentCoords[j][1]+latAvg)/2.0, lng: (currentCoords[j][0]+lngAvg)/2.0});
-    }
-    var tractOffenderPolygon = new google.maps.Polygon({
-      paths: boundaryPath,
-      strokeWeight: 0,
-      strokeOpacity: 1.0,
-      fillColor: offenderDensityColorScale(offenderDensities[i]),
-      fillOpacity: 1.0,
-      map: map,
-      index: i
-    });
-    offenderDensityPolygons.push(tractOffenderPolygon);
-
   }
-  for (var i = 0; i < tractMarkers.length; i++) {
-    tractMarkers[i].setMap(map);
-    addListenersOnPolygon(tractMarkers[i]);
-    if(displayOffenderDensities) {
-      offenderDensityPolygons[i].setMap(map);
+  for(var i = 0; i < schoolPositions.length; i++) {
+    if(map.getBounds().contains(schoolPositions[i])) {
+      schoolsInZoom.push(schoolPositions[i]);
     }
-    else {
-      offenderDensityPolygons[i].setMap(null);
-    }
-    /**
-    if(offenderDensitySelected) {
-      offenderDensityPolygons[i].setMap(null);
-    }
-    if(!$('#offenderDensityCheckbox').is(':checked')) {
-      offenderDensityPolygons[i].setMap(null);
-    }**/
-    //if($('#offenderDensityCheckbox').is(':checked') && $("offenderDensity").attr("data-tog") == "0") {
-      //offenderDensityPolygons[i].setMap(map);
-    //}
-    addListenersOnPolygon(offenderDensityPolygons[i]);
   }
-});
-
-
-  this.onPan();
+  //this.onPan();
   document.body.appendChild(this.svg);
-  this.map.addListener('center_changed', this.onPan);
+  //this.map.addListener('center_changed', this.onPan);
 };
 
 
@@ -895,17 +933,5 @@ $('#radiusSlider').mousemove(function (){
 
 $('#offenderDensityCheckbox').click(function() {
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
-
-  /**if($('#offenderDensityCheckbox').is(':checked')) {
-
-    for (var i = 0; i < offenderDensityPolygons.length; i++) {
-      offenderDensityPolygons[i].setMap(map);
-    }
-  }
-  else {
-    for (var i = 0; i < offenderDensityPolygons.length; i++) {
-      offenderDensityPolygons[i].setMap(null);
-    }
-  }**/
 
 });
