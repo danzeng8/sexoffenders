@@ -338,6 +338,54 @@ var addCircle = function(location) {
       }
 }
 
+var miniEl = document.querySelector('#minimap');
+      var miniWidth = $('#minimap').width();
+      var miniHeight = $('#minimap').height();
+      var miniProjection = d3.geoAlbersUsa().scale(5000).translate([miniWidth / 8, miniHeight / 2.5]);
+      var miniGoogle = window.google;
+
+      var miniMap = new miniGoogle.maps.Map(miniEl, {
+        center: new miniGoogle.maps.LatLng(37.9643,  -91.8318),
+        draggable: false,
+        minZoom: 4,
+        maxZoom: 4,
+        zoom: 4,
+        mapTypeControlOptions: {
+          mapTypeIds: ['terrain']
+        }
+      });
+
+      var rectangleArray = [];
+      function clearRect() {
+        for (var i=0; i<rectangleArray.length; i++) {
+          rectangleArray[i].setMap(null);
+        }
+        rectangleArray.length = 0;
+      }
+
+      google.maps.event.addListener(map,'bounds_changed', function() 
+      {
+        clearRect();
+        var miniRight = map.getBounds().getNorthEast().lng();
+        var miniTop = map.getBounds().getNorthEast().lat();
+        var miniLeft = map.getBounds().getSouthWest().lng();
+        var miniBottom = map.getBounds().getSouthWest().lat();
+        var miniBounds = {
+          north: miniTop,
+          south: miniBottom,
+          east: miniRight,
+          west: miniLeft
+        };
+        rectangle = new google.maps.Rectangle({
+          bounds: miniBounds,
+          editable: false,
+          draggable: false
+        });
+        rectangleArray.push(rectangle);
+        rectangleArray[0].setMap(miniMap);
+      });
+
+
 
 function SVGOverlay (map) {
   this.map = map;
