@@ -825,6 +825,7 @@ overlay = new SVGOverlay(map);
 
 $("#offenderDensity").on("click", function() {
   offenderDensitySelected = true;
+  document.getElementById("currentDemographic").innerHTML= "Sex offender population density";
   $("#offenderDensityCheckbox").attr("disabled", true);
   overlay.setOffenderPolygonVisibilities(false);
   if ($(this).attr("data-tog") == "0"){
@@ -843,6 +844,7 @@ $("#offenderDensity").on("click", function() {
 
 $("#bdegree").on("click",function() {
   offenderDensitySelected = false;
+  document.getElementById("currentDemographic").innerHTML= "Percent with a bachelor's degree";
   $('#offenderDensityCheckbox').removeAttr("disabled");
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
@@ -861,6 +863,7 @@ $("#bdegree").on("click",function() {
 
 $("#fstamps").on("click", function() {
   offenderDensitySelected = false;
+  document.getElementById("currentDemographic").innerHTML= "Percent receiving food stamps";
   $('#offenderDensityCheckbox').removeAttr("disabled");
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
@@ -880,6 +883,7 @@ $("#fstamps").on("click", function() {
 
 $("#medIncome").on("click", function() {
   offenderDensitySelected = false;
+  document.getElementById("currentDemographic").innerHTML= "Median income";
   $('#offenderDensityCheckbox').removeAttr("disabled");
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
@@ -899,6 +903,7 @@ $("#medIncome").on("click", function() {
 
 $("#healthRate").on("click", function() {
   offenderDensitySelected = false;
+  document.getElementById("currentDemographic").innerHTML= "Percent without health insurance";
   $('#offenderDensityCheckbox').removeAttr("disabled");
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
@@ -918,6 +923,7 @@ $("#healthRate").on("click", function() {
 
 $("#povertyRate").on("click", function() {
   offenderDensitySelected = false;
+  document.getElementById("currentDemographic").innerHTML= "Poverty rate";
   $('#offenderDensityCheckbox').removeAttr("disabled");
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
@@ -937,6 +943,7 @@ $("#povertyRate").on("click", function() {
 
 $("#fhhRate").on("click", function() {
   offenderDensitySelected = false;
+  document.getElementById("currentDemographic").innerHTML= "Percent female-headed households";
   $('#offenderDensityCheckbox').removeAttr("disabled");
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
@@ -956,6 +963,7 @@ $("#fhhRate").on("click", function() {
 $("#hhSize").on("click", function() {
   offenderDensitySelected = false;
   $('#offenderDensityCheckbox').removeAttr("disabled");
+  document.getElementById("currentDemographic").innerHTML= "Percent household sizes > 4";
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
     //readHHSizes();
@@ -975,6 +983,7 @@ $("#hhSize").on("click", function() {
 $("#under18Rate").on("click", function() {
   offenderDensitySelected = false;
   $('#offenderDensityCheckbox').removeAttr("disabled");
+  document.getElementById("currentDemographic").innerHTML= "Percent under 18";
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
     //readUnder18();
