@@ -19,6 +19,7 @@ var imageIcon = {
   };
 var offenderDensitySelected = true;
 var displayOffenderDensities = false;
+document.getElementById("offenderGradientDiv").style.visibility='hidden';
 
 //% with bachelor's degree
 var educationRates = []
@@ -223,6 +224,10 @@ readUnder18();
       visMin = offenderRateMin;
       visMax = offenderRateMax;
       visualizedTraitList = offenderDensities;
+      document.getElementById("demographicMin").innerHTML=visMin;
+      document.getElementById("demographicMax").innerHTML=visMax;
+      document.getElementById("offenderDensityMin").innerHTML=offenderRateMin;
+      document.getElementById("offenderDensityMax").innerHTML=offenderRateMax;
     });
   };
   readOffenderDensities();
@@ -664,12 +669,13 @@ SVGOverlay.prototype.onRemove = function () {
 SVGOverlay.prototype.setOffenderPolygonVisibilities = function(offenderPolygonsVisible) {
   displayOffenderDensities = offenderPolygonsVisible;
   if(offenderPolygonsVisible) {
-
+    document.getElementById("offenderGradientDiv").style.visibility='visible';
     for (var i = 0; i < offenderDensityPolygons.length; i++) {
       offenderDensityPolygons[i].setMap(map);
     }
   }
   else {
+    document.getElementById("offenderGradientDiv").style.visibility='hidden';
     for (var i = 0; i < offenderDensityPolygons.length; i++) {
       offenderDensityPolygons[i].setMap(null);
     }
@@ -824,6 +830,8 @@ $("#offenderDensity").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
     visMin = offenderRateMin;
     visMax = offenderRateMax;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = offenderDensities;
     overlay.draw();
     $(this).attr("data-tog", "1")
@@ -838,9 +846,10 @@ $("#bdegree").on("click",function() {
   $('#offenderDensityCheckbox').removeAttr("disabled");
   overlay.setOffenderPolygonVisibilities($('#offenderDensityCheckbox').is(':checked'));
   if ($(this).attr("data-tog") == "0"){
-    //readEducation();
     visMin = educationRateMin;
     visMax = educationRateMax;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = educationRates;
     overlay.draw();
     $(this).attr("data-tog", "1")
@@ -857,6 +866,8 @@ $("#fstamps").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
     visMin = publicRateMin;
     visMax = publicRateMax;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = publicRates;
     overlay.draw();
     $(this).attr("data-tog", "1")
@@ -875,6 +886,8 @@ $("#medIncome").on("click", function() {
     //readIncome();
     visMin = incomeMin;
     visMax = incomeMax;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = medianIncomes;
     overlay.draw();
     $(this).attr("data-tog", "1")
@@ -892,6 +905,8 @@ $("#healthRate").on("click", function() {
     //readHealth();
     visMin = healthRateMin;
     visMax = healthRateMax;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = healthRates;
     overlay.draw();
     $(this).attr("data-tog", "1")
@@ -909,6 +924,8 @@ $("#povertyRate").on("click", function() {
     //readPoverty();
     visMin = povertyMin;
     visMax = povertyMax;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = povertyRates;
     overlay.draw();
     $(this).attr("data-tog", "1")
@@ -925,6 +942,8 @@ $("#fhhRate").on("click", function() {
   if ($(this).attr("data-tog") == "0"){
     visMin = fhhMin;
     visMax = fhhMax;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = fhhs;
     overlay.draw();
     $(this).attr("data-tog", "1")
@@ -942,6 +961,8 @@ $("#hhSize").on("click", function() {
     //readHHSizes();
     visMin = hhSizeMin;
     visMax = hhSizeMax;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = hhSizes;
     overlay.draw();
     $(this).attr("data-tog", "1")
@@ -959,6 +980,8 @@ $("#under18Rate").on("click", function() {
     //readUnder18();
     visMin = u18Min;
     visMax = u18Max;
+    document.getElementById("demographicMin").innerHTML=visMin;
+    document.getElementById("demographicMax").innerHTML=visMax;
     visualizedTraitList = under18s;
     overlay.draw();
     $(this).attr("data-tog", "1")

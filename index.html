@@ -112,10 +112,17 @@
                        <img src = "assets/img/g1.png">School Cluster
                        <img src = "assets/img/g2.png">Offender Cluster
                        <div>
-                          Color scale: 
+                          <b> Background sociodemographic scale: </b>
                           <span id = "demographicMin"></span>
                           <div id = "demographicGradient"> </div>
                           <span id = "demographicMax"></span>
+                       </div>
+                       <div id = "offenderGradientDiv">
+                          <b> Overlay offender density scale: </b>
+                          <!--[DIV].style.visibility='hidden'-->
+                          <span id = "offenderDensityMin"></span>
+                          <div id = "offenderGradient"> </div>
+                          <span id = "offenderDensityMax"></span>
                        </div>
 
                     </div>
@@ -195,6 +202,7 @@
     <script src="assets/js/googleHeatMap.js" type="text/javascript"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3&amp;libraries=places&amp;sensor=false&amp;key=AIzaSyC62R0j23s1c-JzP6Gd3Q7UC5mDykuG-gc&amp;callback=initMap"></script>
     <script src="assets/js/gradientLegend.js" type="text/javascript"></script>
+    <script src="assets/js/offenderGradient.js" type="text/javascript"></script>
     <script src="assets/js/parallelcoordinates.js" type="text/processing" data-processing-target="mycanvas"></script>
     
 

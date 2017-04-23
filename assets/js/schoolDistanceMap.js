@@ -92,7 +92,6 @@ var findSchoolOffenderDistances = function(polygon) {
 	schoolDistCanvasWidth = Math.max(272,$('#schoolDistanceMap').width());
 	schoolDistCanvasHeight = Math.max(136,0.5*$('#schoolDistanceMap').width());
 
-	console.log(schoolDistCanvasWidth,schoolDistCanvasHeight);
 	marginX = 0.1*schoolDistCanvasWidth;
 	marginY = 0.1*schoolDistCanvasHeight;
 	var graphHeight = 0.8 * schoolDistCanvasHeight;
@@ -154,5 +153,59 @@ var findSchoolOffenderDistances = function(polygon) {
 			.attr("x", marginX+(10*graphWidth / 10.0)-(0.25*marginX))
 			.attr("y", marginY + graphHeight + (0.5*marginY))
 			.text(">10000 feet");
+
+	gradientCanvas = d3.select("#demographicGradient")
+	    .append("svg")
+	    .attr("width", 120)
+	    .attr("height", 20);
+
+	gradient = gradientCanvas.append("defs")
+	      .append("linearGradient")
+	        .attr("id", "gradient")
+	        .attr("spreadMethod", "pad");
+
+	gradient.append("stop")
+	    .attr("offset", "0%")
+	    .attr("stop-color", d3.rgb(255,230,230))
+	    .attr("stop-opacity", 1);
+
+	gradient.append("stop")
+	    .attr("offset", "100%")
+	    .attr("stop-color", d3.rgb(153,0,0))
+	    .attr("stop-opacity", 1);
+
+	gradientCanvas.append("rect")
+	    .attr("x", 0)
+	    .attr("y", 0)
+	    .attr("width", 120)
+	    .attr("height", 20)
+	    .style("fill", "url(#gradient)");
+
+	 offenderGradientCanvas = d3.select("#offenderGradient")
+	    .append("svg")
+	    .attr("width", 120)
+	    .attr("height", 20);
+
+	offenderGradient = offenderGradientCanvas.append("defs")
+	      .append("linearGradient")
+	        .attr("id", "offenderGradient")
+	        .attr("spreadMethod", "pad");
+
+	offenderGradient.append("stop")
+	    .attr("offset", "0%")
+	    .attr("stop-color", d3.rgb(240,248,255))
+	    .attr("stop-opacity", 1);
+
+	offenderGradient.append("stop")
+	    .attr("offset", "100%")
+	    .attr("stop-color", d3.rgb(25,25,112))
+	    .attr("stop-opacity", 1);
+
+	offenderGradientCanvas.append("rect")
+	    .attr("x", 0)
+	    .attr("y", 0)
+	    .attr("width", 120)
+	    .attr("height", 20)
+	    .style("fill", "url(#offenderGradient)");
 
 }
