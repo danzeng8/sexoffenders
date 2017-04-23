@@ -200,7 +200,7 @@ void mousePressed() {
 void mouseClicked() {
   for(int i = 1; i < colNames.length; i++) {
     //Flip orientation if intersect toggle
-    if(mouseX > (marginX + (i-1) * lineWidthIncrement)-(0.02*width) && mouseX < ((marginX + (i-1) * lineWidthIncrement)-(0.02*width)) + (0.04*width) && mouseY > 1.75*topMargin + frameHeight && mouseY < (1.75*topMargin + frameHeight) + 0.04*height) {
+    if(mouseX > marginX + (i-1) * lineWidthIncrement-(0.015*width) && mouseX < marginX + (i-1) * lineWidthIncrement+(0.015*width) && mouseY > 1.74*topMargin + frameHeight && mouseY < 1.9*topMargin + frameHeight) {
       if(orientations[i-1] == 0) {
         orientations[i-1] = 1;
       }
@@ -720,46 +720,7 @@ if(selectedTractIndex != -1 && displaySelectedLine) {
       if(orientations[j+1] == 1) {
         pos2Y = topMargin + (currentRow[j+1] * frameHeight);
       }
-      //If mouse hovers over one segment of data point, then highlight all lines of data point
-     /**if(!rectangleSelection && closeToLine(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
-        stroke(color(0.0,0.0,255.0));
-        for(int k = 0; k < currentRow.length-1; k++) {
-             pos1Y = topMargin + ((1.0 - currentRow[k]) * frameHeight);
-             pos2Y = topMargin + ((1.0 - currentRow[k+1]) * frameHeight);
-             if(orientations[k] == 1) {
-                pos1Y = topMargin + (currentRow[k] * frameHeight);
-             }
-             if(orientations[k+1] == 1) {
-                pos2Y = topMargin + (currentRow[k+1] * frameHeight);
-             }
-             //float[4] selectedPosition = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
-            selectedPositions.add(i);
-         }
-         break;
-      }
-      if(rectangleSelection) {
-        //If rectangle contains or intersects one segment of data point, then highlight all lines of data point
-        if(selectedByRectangle(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
-          stroke(color(0.0,0.0,255.0));
-          for(int k = 0; k < currentRow.length-1; k++) {
-             if(k == draggedIndex || k + 1 == draggedIndex) {
-              continue; 
-             }
-             pos1Y = topMargin + ((1.0 - currentRow[k]) * frameHeight);
-             pos2Y = topMargin + ((1.0 - currentRow[k+1]) * frameHeight);
-             if(orientations[k] == 1) {
-                pos1Y = topMargin + (currentRow[k] * frameHeight);
-             }
-             if(orientations[k+1] == 1) {
-                pos2Y = topMargin + (currentRow[k+1] * frameHeight);
-             }
-             float[4] selectedPosition = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
-             selectedPositions.add(selectedPosition);
-             //line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
-          }
-          break;
-        }
-      }**/
+
       
      line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
    }
@@ -807,46 +768,7 @@ if(displayMedian) {
         pos2Y = topMargin + (currentRow[j+1] * frameHeight);
       }
       //If mouse hovers over one segment of data point, then highlight all lines of data point
-      /**if(!rectangleSelection && closeToLine(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
-        stroke(color(0.0,0.0,255.0));
-        for(int k = 0; k < currentRow.length-1; k++) {
-             pos1Y = topMargin + ((1.0 - currentRow[k]) * frameHeight);
-             pos2Y = topMargin + ((1.0 - currentRow[k+1]) * frameHeight);
-             if(orientations[k] == 1) {
-                pos1Y = topMargin + (currentRow[k] * frameHeight);
-             }
-             if(orientations[k+1] == 1) {
-                pos2Y = topMargin + (currentRow[k+1] * frameHeight);
-             }
-             //line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
-            float[4] selectedPosition = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
-             selectedPositions.add(selectedPosition);
-         }
-         break;
-      }
-      if(rectangleSelection) {
-        //If rectangle contains or intersects one segment of data point, then highlight all lines of data point
-        if(selectedByRectangle(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
-          stroke(color(0.0,0.0,255.0));
-          for(int k = 0; k < currentRow.length-1; k++) {
-             if(k == draggedIndex || k + 1 == draggedIndex) {
-              continue; 
-             }
-             pos1Y = topMargin + ((1.0 - currentRow[k]) * frameHeight);
-             pos2Y = topMargin + ((1.0 - currentRow[k+1]) * frameHeight);
-             if(orientations[k] == 1) {
-                pos1Y = topMargin + (currentRow[k] * frameHeight);
-             }
-             if(orientations[k+1] == 1) {
-                pos2Y = topMargin + (currentRow[k+1] * frameHeight);
-             }
-             //line(marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y);
-             float[4] selectedPosition = {marginX + k * lineWidthIncrement, pos1Y, marginX + (k+1) * lineWidthIncrement, pos2Y};
-             selectedPositions.add(selectedPosition);
-          }
-          break;
-        }
-      }**/
+      
       
       line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
    }
@@ -947,10 +869,14 @@ if(displayMedian) {
         triangle(marginX + (i-1) * lineWidthIncrement, topMargin + (frameHeight * topKnobHeights[i-1]), (marginX + (i-1) * lineWidthIncrement) - 10.0, (topMargin + (frameHeight * topKnobHeights[i-1])) - 7.5, (marginX + (i-1) * lineWidthIncrement) + 10.0, (topMargin + (frameHeight * topKnobHeights[i-1])) - 7.5);
         fill(color(0.0,255.0,0.0));
         triangle(marginX + (i-1) * lineWidthIncrement, topMargin + (frameHeight * bottomKnobHeights[i-1]), (marginX + (i-1) * lineWidthIncrement) - 10.0, topMargin + (bottomKnobHeights[i-1] * frameHeight) + 7.5, (marginX + (i-1) * lineWidthIncrement) + 10.0, topMargin+(bottomKnobHeights[i-1]*frameHeight) + 7.5);
+        
       }
       //Hovering over swap buttons
       if(orientations[i - 1] == 1) {
-        fill(color(255.0,255.0,255.0));
+        fill(color(0.0,255.0,250.0));
+        if(mouseX > (marginX + (i-1) * lineWidthIncrement)-(0.02*width) && mouseX < ((marginX + (i-1) * lineWidthIncrement)-(0.02*width)) + (0.04*width) && mouseY > 1.75*topMargin + frameHeight && mouseY < (1.75*topMargin + frameHeight) + 0.04*height) {
+          fill(color(0.0,255.0,0.0));
+        }
       }
       else {
         fill(color(0.0,255.0,0.0));
@@ -958,10 +884,16 @@ if(displayMedian) {
           fill(color(0.0,255.0,250.0));
         }
       }
+      strokeWeight(0.0001);
+
+      triangle(marginX + (i-1) * lineWidthIncrement-(0.015*width), 1.74*topMargin + frameHeight, marginX + (i-1) * lineWidthIncrement+(0.015*width), 1.74*topMargin + frameHeight, marginX + (i-1) * lineWidthIncrement, 1.67*topMargin + frameHeight);
+      triangle(marginX + (i-1) * lineWidthIncrement-(0.015*width), 1.83*topMargin + frameHeight, marginX + (i-1) * lineWidthIncrement+(0.015*width), 1.83*topMargin + frameHeight, marginX + (i-1) * lineWidthIncrement, 1.9*topMargin + frameHeight);
+      rect(marginX + (i-1) * lineWidthIncrement-(0.005*width), 1.72*topMargin + frameHeight, 0.01*width, 0.16*topMargin);
+      strokeWeight(1.0);
       //swap buttons
-      rect((marginX + (i-1) * lineWidthIncrement)-(0.02*width), 1.75*topMargin + frameHeight, 0.04*width, 0.04*height);    
-      fill(0.0);
-      text("swap",(marginX + (i-1) * lineWidthIncrement)-(0.015*width), 1.92*topMargin + frameHeight);
+      //rect((marginX + (i-1) * lineWidthIncrement)-(0.02*width), 1.75*topMargin + frameHeight, 0.04*width, 0.04*height);    
+      //fill(0.0);
+      //text("swap",(marginX + (i-1) * lineWidthIncrement)-(0.015*width), 1.92*topMargin + frameHeight);
       
       if(sliderXPos > 3.0*marginX) {
         //Gradient buttons
