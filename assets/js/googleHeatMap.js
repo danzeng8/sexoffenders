@@ -1,4 +1,4 @@
-var selectedTractIndex = -1;
+
 var visualizedTraitList = []
 var offenderCircles = new Array()
 var offenderMarkers = new Array()
@@ -14,12 +14,16 @@ var currentCircleRadius = 304.8;
 var positionCircles = {};
 var offendersInZoom = new Array();
 var schoolsInZoom = new Array();
+var tractCentroids = new Array();
+var visibleTracts = new Array();
 var imageIcon = {
     url :'assets/img/school.JPG'
   };
 var offenderDensitySelected = true;
 var displayOffenderDensities = false;
 document.getElementById("offenderGradientDiv").style.visibility='hidden';
+var tractSociodemographics = new Array();
+var selectedTractIndex = -1;
 
 //% with bachelor's degree
 var educationRates = []
@@ -391,7 +395,6 @@ var miniEl = document.querySelector('#minimap');
       });
 
 
-
 function SVGOverlay (map) {
   this.map = map;
   this.svg = null;
@@ -463,7 +466,6 @@ SVGOverlay.prototype.onAdd = function () {
     for(i = 0; i < mapdata.features.length; i++) {
     var currentCoords = mapdata.features[i].geometry.coordinates[0];
     var polygonCoords = [];
-    //console.log(colorScale(visualizedTraitList[i]));
     var latAvg = 0.0;
     var lngAvg = 0.0;
     for(j = 0; j < currentCoords.length; j++) {
@@ -488,6 +490,13 @@ SVGOverlay.prototype.onAdd = function () {
     for(j = 0; j < currentCoords.length; j++) {
       boundaryPath.push({lat: (currentCoords[j][1]+latAvg)/2.0, lng: (currentCoords[j][0]+lngAvg)/2.0});
     }
+    var centroid = new google.maps.LatLng(latAvg,lngAvg);
+    tractCentroids.push(centroid);
+    if(map.getBounds().contains(centroid))
+    {
+      visibleTracts.push(i);
+    }
+
     offenderDensityPolygons[i] = new google.maps.Polygon({
       paths: boundaryPath,
       strokeWeight: 0,
@@ -511,7 +520,6 @@ SVGOverlay.prototype.onAdd = function () {
       offenderDensityPolygons[i].setMap(null);
     }
   }
-
 });
 
 
@@ -658,6 +666,12 @@ SVGOverlay.prototype.onPan = function() {
       schoolsInZoom.push(schoolPositions[i]);
     }
   }
+  visibleTracts = new Array();
+  for(var i = 0; i < tractCentroids.length; i++) {
+    if(map.getBounds().contains(tractCentroids[i])) {
+      visibleTracts.push(i);
+    }
+  }
 };
 
 SVGOverlay.prototype.onRemove = function () {
@@ -686,6 +700,7 @@ SVGOverlay.prototype.setOffenderPolygonVisibilities = function(offenderPolygonsV
 SVGOverlay.prototype.draw = function () {
   offendersInZoom = new Array();
   schoolsInZoom = new Array();
+  visibleTracts = new Array();
  var colorScale = d3.scaleLinear().domain([visMin,visMax]).range(["##ffe6e6","#990000"]);
  for (var i = 0; i < tractMarkers.length; i++) {
   tractMarkers[i].setMap(null);
@@ -748,7 +763,6 @@ SVGOverlay.prototype.draw = function () {
     for(i = 0; i < mapdata.features.length; i++) {
       var currentCoords = mapdata.features[i].geometry.coordinates[0];
       var polygonCoords = [];
-      //console.log(colorScale(visualizedTraitList[i]));
       var latAvg = 0.0;
       var lngAvg = 0.0;
       for(j = 0; j < currentCoords.length; j++) {
@@ -766,6 +780,12 @@ SVGOverlay.prototype.draw = function () {
         fillOpacity: 0.5,
         index: i
       });
+
+
+      if(map.getBounds().contains(tractCentroids[i]))
+      {
+        visibleTracts.push(i);
+      }
 
       tractMarkers.push(tractPolygon);
 
@@ -785,6 +805,7 @@ SVGOverlay.prototype.draw = function () {
       offenderDensityPolygons.push(tractOffenderPolygon);
 
     }
+
     for (var i = 0; i < tractMarkers.length; i++) {
       tractMarkers[i].setMap(map);
       addListenersOnPolygon(tractMarkers[i]);
@@ -800,6 +821,10 @@ SVGOverlay.prototype.draw = function () {
 
 
   });
+  //visibleTractIndices = new int[visibleTractIndices.length];
+  //for(var i = 0; i < visibleTracts.length; i++) {
+    //visibleTractIndices[i] = visibleTracts[i];
+  //}
 
   for(var i = 0; i < markerPositions.length; i++) {
     if(map.getBounds().contains(markerPositions[i])) {

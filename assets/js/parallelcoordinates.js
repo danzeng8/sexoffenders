@@ -53,7 +53,7 @@ boolean changedSize;
 float currentSliderProportion;
 
 void setup() {
-
+  frameRate(5);
   size(canvasWidth,canvasHeight);
   //size(1000,1000);
   data = loadStrings(fileName);
@@ -107,9 +107,8 @@ void setup() {
   f = createFont("Times New Roman", 12, true);
   rectangleSelection = false;
   displayMedian = true;
-  //displayAllTracts = false;
   displaySelectedLine = true;
-  currentSliderProportion = 0.1;
+  currentSliderProportion = 1.0;
   sliderXPos = 3.0*marginX + currentSliderProportion*(0.1*width);
   togglingNumTracts = false;
   changedSize = false;
@@ -480,6 +479,8 @@ void drawColumnAtMouse(int index) {
 }
 
 
+
+
 void draw() {
    ArrayList selectedPositions = new ArrayList();
    if(0.9*$('#parallelcoordinates').width() != canvasWidth) {
@@ -529,12 +530,27 @@ void draw() {
    }
  }
  if(sliderXPos > 3.0*marginX) {
+  int count = 0;
+  
+  float[][] newVisibleTracts = new float[visibleTracts.length][colNames.length-1];
+  for(int i = 0; i < visibleTracts.length; i++) {
+    count += 1;
+    newVisibleTracts[i] = dataPositions[visibleTracts[i]+1];
+  }
+
  //if(displayAllTracts) {
-   float dataProportion = min(1.0,(sliderXPos - 3.0*marginX) / (0.1*width));
-   for(int i = 1; i < dataProportion*data.length; i++) {
-    stroke(128);
-     float[] currentRow = dataPositions[i-1];
-     
+   float dataProportion = max(0,min(1.0,(sliderXPos - 3.0*marginX) / (0.1*width)));
+   //int dataToShow = min(20,(int)(dataProportion*visibleTracts.length));
+   //for(int k = 0; k < dataToShow; k++) {
+    //int i = visibleTracts[k] + 1;
+    //for(int i = 1; i < dataProportion*data.length; i++) {
+    int numToShow = count * dataProportion;
+    for(int i = 0; i < numToShow; i++) {
+     //float[] currentRow = dataPositions[i-1];
+     float[] currentRow = newVisibleTracts[i];
+     if(currentRow == null) {
+      continue;
+     }
      //If dimension selected, color data lines according to that dimension
      if(colorGradientIndex != -1) {
        color currentColor = lerpColor(gradientColor1, gradientColor2,1.0-currentRow[colorGradientIndex]);
@@ -582,7 +598,7 @@ void draw() {
         }
         //If mouse hovers over one segment of data point, then highlight all lines of data point
         if(!rectangleSelection && closeToLine(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
-          stroke(color(0.0,0.0,255.0));
+          //stroke(color(0.0,0.0,255.0));
           for(int k = 0; k < currentRow.length-1; k++) {
                pos1Y = topMargin + ((1.0 - currentRow[k]) * frameHeight);
                pos2Y = topMargin + ((1.0 - currentRow[k+1]) * frameHeight);
@@ -600,7 +616,7 @@ void draw() {
         if(rectangleSelection) {
           //If rectangle contains or intersects one segment of data point, then highlight all lines of data point
           if(selectedByRectangle(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y)) {
-            stroke(color(0.0,0.0,255.0));
+            //stroke(color(0.0,0.0,255.0));
             for(int k = 0; k < currentRow.length-1; k++) {
                if(k == draggedIndex || k + 1 == draggedIndex) {
                 continue; 
@@ -623,9 +639,11 @@ void draw() {
         line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
      }
   }
+
   for(int i = 0; i < selectedPositions.size(); i++) {
     stroke(color(0.0,0.0,255.0));
-     float[] currentRow = dataPositions[((int)selectedPositions.get(i))-1];
+     float[] currentRow = newVisibleTracts[((int)selectedPositions.get(i))];
+     //float[] currentRow = dataPositions[((int)selectedPositions.get(i))-1];
      
      //If dimension selected, color data lines according to that dimension
      if(colorGradientIndex != -1) {
@@ -772,11 +790,7 @@ if(displayMedian) {
       
       line(marginX + j * lineWidthIncrement, pos1Y, marginX + (j+1) * lineWidthIncrement, pos2Y);
    }
-   /**for(int i = 0; i < selectedPositions.length; i++) {
-      stroke(color(0.0,0.0,255.0));
-      line(selectedPositions[i][0],selectedPositions[i][1],selectedPositions[i][2],selectedPositions[i][3]);
-    }
-    stroke(128);**/
+
 }
  
  if(rectangleSelection) {
@@ -788,6 +802,7 @@ if(displayMedian) {
    strokeWeight(4);
    fill(0.0);
    stroke(0);
+
    for(int i = 1; i < colNames.length; i++) {
       if(i - 1 == draggedIndex) {
               continue; 
@@ -967,8 +982,6 @@ rect(3.0*marginX, 0.27 * topMargin, 0.1*width, 0.005*height);
 text("0%", 2.9*marginX, 0.53*topMargin);
 text("100%", 3.9*marginX, 0.53*topMargin);
 drawTractPercentSlider();
-
-
 
  
 }
