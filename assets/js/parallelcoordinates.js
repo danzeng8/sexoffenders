@@ -82,7 +82,7 @@ void setup() {
     maxes[i] =  -100000000.0;
     orientations[i] = 0;
     colorSelectionModes[i] = false;
-    dimensionSelected[i] = false;
+    dimensionSelected[i] = true;
     togglingBottom[i] = false;
     togglingTop[i] = false;
     beingDragged[i] = false;
@@ -819,11 +819,23 @@ if(displayMedian) {
            if(orientations[i-1] == 1) {
              axisValue = (j / 5.0) * (currentMax - currentMin);
            }
+           if(axisValue <= 1) {
+            axisValue *= 10000.0;
+            int roundedAxisValue = Math.round(axisValue);
+            axisValue = roundedAxisValue / 100;
+          }
            text(axisValue.toString(), marginX + (i-1) * lineWidthIncrement - textWidth(axisValue.toString()) - 6.0,currentYPos);
         }
       }
-      
+
       String currentMaxStr = currentMax.toString();
+      if(currentMax <= 1) {
+        currentMax *= 10000.0;
+        int roundedMax = Math.round(currentMax);
+        currentMax = roundedMax / 100;
+        currentMaxStr = currentMax.toString();
+      }
+      
       if(orientations[i-1] == 0) {
         text(currentMaxStr, (marginX - 0.5*textWidth(currentMaxStr)) + (i-1) * lineWidthIncrement, (0.8*topMargin));
       }
@@ -855,6 +867,12 @@ if(displayMedian) {
       fill(0.0);
       
       String currentMinStr = currentMin.toString();
+      if(currentMin <= 1) {
+        currentMin *= 10000.0;
+        int roundedMin = Math.round(currentMin);
+        currentMin = roundedMin / 100;
+        currentMinStr = currentMin.toString();
+      }
       if(orientations[i-1] == 0) {
         text(currentMinStr, (marginX - 0.5*textWidth(currentMinStr)) + (i-1) * lineWidthIncrement, (1.25*topMargin) + frameHeight);
       }
