@@ -246,8 +246,9 @@ readUnder18();
     var tractMarkers = [];
     var map = new google.maps.Map(el, {
 	center: new google.maps.LatLng(38.659175,  -90.396881),
-	zoom: 8,
-	maxZoom: 14
+	zoom: 9,
+  minZoom: 7,
+	maxZoom: 20
 	//mapTypeControlOptions: {
       //mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain','styled_map']
 	//}
